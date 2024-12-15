@@ -172,7 +172,7 @@
             </div>
             <div class="api-card">
                 <h3>部署区域</h3>
-                <span class="badge">HND1 (东京)</span>
+                <span class="badge" id="deployment-region">加载中...</span>
             </div>
         </div>
 
@@ -407,7 +407,7 @@ curl ${base_url}/github/v1/chat/completions \
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const BASE_URL = 'https://pua.vercel.app';
+            const BASE_URL = 'https://apiproxy.fkoai.com';
             const elements = document.querySelectorAll('code');
             elements.forEach(element => {
                 element.innerText = element.innerText.replace('${base_url}', BASE_URL);
@@ -443,6 +443,27 @@ curl ${base_url}/github/v1/chat/completions \
                 button.textContent = originalText;
             }, 2000);
         }
+
+        fetch('/_utils/metadata')
+        .then(response => response.json())
+        .then(data => {
+            const regionMap = {
+                'hnd1': 'HND1 (东京)',
+                'sfo1': 'SFO1 (旧金山)',
+                'iad1': 'IAD1 (华盛顿)',
+                'sin1': 'SIN1 (新加坡)',
+                'fra1': 'FRA1 (法兰克福)',
+                // 添加更多区域映射...
+            };
+            
+            const region = data.region?.toLowerCase() || 'unknown';
+            const regionDisplay = regionMap[region] || region.toUpperCase();
+            document.getElementById('deployment-region').textContent = regionDisplay;
+        })
+        .catch(error => {
+            console.error('获取部署区域失败:', error);
+            document.getElementById('deployment-region').textContent = '未知区域';
+        });
     </script>
 </body>
 </html>
