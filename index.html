@@ -444,29 +444,24 @@ curl ${base_url}/github/v1/chat/completions \
             }, 2000);
         }
 
-        fetch('/')
-        .then(response => {
-            const vercelId = response.headers.get('x-vercel-id');
-            if (!vercelId) throw new Error('未找到Vercel部署信息');
-            
-            const region = vercelId.split('.')[0];
+        fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
             const regionMap = {
-                'hnd1': 'HND1 (东京)',
-                'sfo1': 'SFO1 (旧金山)', 
-                'iad1': 'IAD1 (华盛顿)',
-                'sin1': 'SIN1 (新加坡)',
-                'fra1': 'FRA1 (法兰克福)',
-                'dub1': 'DUB1 (都柏林)',
-                'pdx1': 'PDX1 (波特兰)',
-                'cle1': 'CLE1 (克利夫兰)',
-                'gru1': 'GRU1 (圣保罗)',
-                'hkg1': 'HKG1 (香港)',
-                'cdg1': 'CDG1 (巴黎)',
-                'bom1': 'BOM1 (孟买)',
-                'syd1': 'SYD1 (悉尼)',
+                'JP': '东京',
+                'US': '美国',
+                'SG': '新加坡', 
+                'DE': '法兰克福',
+                'IE': '都柏林',
+                'BR': '圣保罗',
+                'HK': '香港',
+                'FR': '巴黎',
+                'IN': '孟买',
+                'AU': '悉尼'
             };
             
-            const regionDisplay = regionMap[region] || region.toUpperCase();
+            const location = regionMap[data.country_code] || data.city;
+            const regionDisplay = `${data.city || ''} (${location})`;
             document.getElementById('deployment-region').textContent = regionDisplay;
         })
         .catch(error => {
