@@ -444,25 +444,10 @@ curl ${base_url}/github/v1/chat/completions \
             }, 2000);
         }
 
-        fetch('https://ipapi.co/json/')
+        fetch('/api/region')
         .then(response => response.json())
         .then(data => {
-            const regionMap = {
-                'JP': '东京',
-                'US': '美国',
-                'SG': '新加坡', 
-                'DE': '法兰克福',
-                'IE': '都柏林',
-                'BR': '圣保罗',
-                'HK': '香港',
-                'FR': '巴黎',
-                'IN': '孟买',
-                'AU': '悉尼'
-            };
-            
-            const location = regionMap[data.country_code] || data.city;
-            const regionDisplay = `${data.city || ''} (${location})`;
-            document.getElementById('deployment-region').textContent = regionDisplay;
+            document.getElementById('deployment-region').textContent = data.location;
         })
         .catch(error => {
             console.error('获取部署区域失败:', error);
