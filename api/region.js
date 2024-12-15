@@ -1,31 +1,27 @@
 export const config = {
-  runtime: 'edge',
+  runtime: 'edge'
 };
 
-export default async function handler(request) {
-  // 获取Vercel部署区域
-  const vercelId = request.headers.get('x-vercel-id');
-  const region = vercelId?.split('.')[0] || 'unknown';
+export default function handler(request) {
+  // 从环境变量读取部署区域
+  const deploymentRegion = process.env.VERCEL_DEPLOYMENT_REGION || 'unknown';
   
-  // 区域映射
   const regionMap = {
+    'sin1': '新加坡',
     'hnd1': '东京',
     'sfo1': '旧金山',
     'iad1': '华盛顿',
-    'sin1': '新加坡',
-    'fra1': '法兰克福',
-    'dub1': '都柏林',
-    'pdx1': '波特兰',
-    'gru1': '圣保罗'
+    'fra1': '法兰克福'
   };
 
+  const location = regionMap[deploymentRegion] || deploymentRegion;
+
   return new Response(JSON.stringify({
-    region: region,
-    location: regionMap[region] || region
+    region: deploymentRegion,
+    location: location
   }), {
     headers: {
-      'content-type': 'application/json',
-      'cache-control': 'public, s-maxage=1800'
+      'content-type': 'application/json'
     }
   });
 }
